@@ -8,16 +8,51 @@
       content="script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src 'self' https://api.openai.com;"
     />
     <style>
+      body {
+        font-family: sans-serif;
+        margin: 0;
+        padding: 10px;
+        background-color: #e4e4e4;
+      }
       #messages {
-        height: calc(100vh - 130px);
+        height: calc(100vh - 125px);
         overflow-y: scroll;
+        padding: 0.5rem;
+        background-color: #fcf2f2;
+        animation: fadeIn 1s;
+      }
+      #input {
+        width: 100%;
+        max-width: 100%;
+        padding: 0.5rem;
+        font-size: 1rem;
+        margin-right: 10px;
+        border: 1px solid #ccc;
+      }
+      button {
+        background-color: #0d6efd;
+        color: white;
+        padding: 0.5rem 1rem;
+        border: none;
+        cursor: pointer;
+      }
+      h3 {
+        background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      #input-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
       }
     </style>
   </head>
   <body>
     <h3>ChatGPT Desktop App</h3>
     <div id="messages"></div>
-    <div style="position: absolute; bottom: 0; width: 100%;">
+    <div id="input-container">
       <input
         type="text"
         id="input"

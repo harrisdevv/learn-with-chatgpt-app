@@ -1,3 +1,10 @@
+// import React from 'react';
+// import ReactDOM from 'react-dom';
+// import MyComponent from './MyComponent'; // Import your component
+// const rootElement = document.getElementById('root');
+// const root = ReactDOM.createRoot(rootElement);
+// root.render(<MyComponent />);
+
 var messages = [
   {
     role: "system",
