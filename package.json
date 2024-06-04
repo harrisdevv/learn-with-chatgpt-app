@@ -1,0 +1,22 @@
+{
+  "name": "chatgpt-desktop-app",
+  "version": "1.0.0",
+  "description": "A desktop app that connects to ChatGPT",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Harry",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^30.0.9"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "browserify": "^17.0.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "openai": "^4.47.3"
+  },
+  "keywords": []
+}

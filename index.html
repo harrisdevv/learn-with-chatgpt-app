@@ -7,18 +7,33 @@
       http-equiv="Content-Security-Policy"
       content="script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src 'self' https://api.openai.com;"
     />
+    <style>
+      #messages {
+        height: calc(100vh - 130px);
+        overflow-y: scroll;
+      }
+    </style>
   </head>
   <body>
-    <h1>ChatGPT Desktop App</h1>
-    <p>
-      We are using Node.js <span id="node-version"></span>, Chromium
-      <span id="chrome-version"></span>, and Electron
-      <span id="electron-version"></span>.
-    </p>
+    <h3>ChatGPT Desktop App</h3>
     <div id="messages"></div>
-    <input type="text" id="input" placeholder="Type your message..." />
-    <button onclick="sendMessage()">Send</button>
+    <div style="position: absolute; bottom: 0; width: 100%;">
+      <input
+        type="text"
+        id="input"
+        placeholder="Type your message..."
+        onkeydown="if(event.key === 'Enter') {sendMessage(); event.target.value = ''}"
+      />
+      <button onclick="sendMessage()">Send</button>
+    </div>
     <script src="node_modules/axios/dist/axios.min.js"></script>
     <script src="renderer.js"></script>
+    <script>
+      const messages = document.getElementById("messages");
+      messages.addEventListener("DOMNodeInserted", () => {
+        messages.scrollTop = messages.scrollHeight;
+      });
+    </script>
   </body>
 </html>
+

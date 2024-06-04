@@ -1,4 +1,4 @@
-messages = [
+var messages = [
   {
     role: "system",
     content: "You are a helpful assistant.",
@@ -7,9 +7,11 @@ messages = [
 async function sendMessage() {
   const message = document.getElementById("input").value.trim();
   if (message === "") return;
-  document.getElementById("messages").innerHTML += `<p>You: ${message}</p>`;
+  const messageElement = document.createElement("p");
+  messageElement.textContent = `You: ${message}`;
+  document.getElementById("messages").appendChild(messageElement);
   try {
-    messages.append({ role: "user", content: message });
+    messages.push({ role: "user", content: message });
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
       {
@@ -23,8 +25,13 @@ async function sendMessage() {
         },
       }
     );
-    const data = response.data.choices[0].message.content;
-    document.getElementById("messages").innerHTML += `<p>ChatGPT: ${data}</p>`;
+    const data = response.data.choices[0].message.content
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+    document.getElementById(
+      "messages"
+    ).innerHTML += `<p>ChatGPT: ${data.replace(/\n/g, "<br>")}</p>`;
   } catch (error) {
     console.error("Error:", error);
   }
