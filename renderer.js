@@ -1,9 +1,8 @@
-// import React from 'react';
-// import ReactDOM from 'react-dom';
-// import MyComponent from './MyComponent'; // Import your component
-// const rootElement = document.getElementById('root');
-// const root = ReactDOM.createRoot(rootElement);
-// root.render(<MyComponent />);
+var map = {
+  summarytext: "summary the book ??? with 3 sentences",
+  summarybook:
+    "convert the book ??? to actionable habits, actions to do everyday",
+};
 
 var messages = [
   {
@@ -41,5 +40,40 @@ async function sendMessage() {
     ).innerHTML += `<p>ChatGPT: ${data.replace(/\n/g, "<br>")}</p>`;
   } catch (error) {
     console.error("Error:", error);
+  }
+}
+
+async function completeMessage() {
+  const text = input.value;
+  console.log(text);
+  if (text.startsWith("/") && text.length > 1) {
+    const prefix = text.slice(1);
+    const items = Object.keys(map).filter((key) => key.startsWith(prefix));
+
+    console.log("items: " + items);
+    if (items.length > 0) {
+      dropdown.style.display = "block";
+      dropdown.innerHTML = "";
+      items.forEach((item) => {
+        const option = document.createElement("div");
+        option.textContent = item;
+        option.addEventListener("click", () => {
+          const jumpIndex = map[item].indexOf("???");
+          input.value = `${map[item].replace("???","")}`;
+          input.focus()
+          if (jumpIndex != -1) {
+            console.log(jumpIndex)
+            input.setSelectionRange(jumpIndex, jumpIndex); // Set the selection range to the specified index
+          }
+
+          dropdown.style.display = "none";
+        });
+        dropdown.appendChild(option);
+      });
+    } else {
+      dropdown.style.display = "none";
+    }
+  } else {
+    dropdown.style.display = "none";
   }
 }

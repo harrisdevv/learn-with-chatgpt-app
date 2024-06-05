@@ -7,6 +7,8 @@
       http-equiv="Content-Security-Policy"
       content="script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; connect-src 'self' https://api.openai.com;"
     />
+    <link rel="stylesheet" href="src/styles/output.css">
+
     <style>
       body {
         font-family: sans-serif;
@@ -47,6 +49,12 @@
         align-items: center;
         width: 100%;
       }
+      #dropdown {
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 1;
+      }
     </style>
   </head>
   <body>
@@ -58,13 +66,18 @@
         id="input"
         placeholder="Type your message..."
         onkeydown="if(event.key === 'Enter') {sendMessage(); event.target.value = ''}"
+        oninput="completeMessage()"
+        class="rounded focus:ring-2 focus:ring-blue-600"
       />
-      <button onclick="sendMessage()">Send</button>
+      <div id="dropdown" style="display: none"></div>
+      <button onclick="sendMessage()" class="transition-all rounded hover:bg-blue-400 hover:text-grey-900 hover:border-black hover:border-10">Send</button>
     </div>
     <script src="node_modules/axios/dist/axios.min.js"></script>
     <script src="renderer.js"></script>
     <script>
       const messages = document.getElementById("messages");
+      const input = document.getElementById("input");
+      const dropdown = document.getElementById("dropdown");
       messages.addEventListener("DOMNodeInserted", () => {
         messages.scrollTop = messages.scrollHeight;
       });
