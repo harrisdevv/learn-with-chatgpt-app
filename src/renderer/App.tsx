@@ -5,6 +5,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 import '../styles/output.css'; // Ensure Tailwind CSS is correctly configured
+import Message from './message';
 
 function Hello() {
   return (
@@ -106,8 +107,11 @@ const MainApp: React.FC = () => {
         backgroundColor: '#fcf2f2',
         animation: 'fadeIn 1s',
       }} className=" text-black">
-        {messages.map((message, index) => (
+        {/* {messages.map((message, index) => (
           <p key={index} className="text-black">{message.role === 'user' ? `You: ${message.content}` : `ChatGPT: ${message.content}`}</p>
+        ))} */}
+        {messages.map((message, index) => (
+          <Message index={index} author={message.role} content={message.content} />
         ))}
       </div>
       <div id="input-container" style={{
