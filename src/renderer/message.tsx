@@ -30,7 +30,9 @@ class Message extends React.PureComponent<MessageProps> {
             </div>
             <p className="text-center text-xs items-center text-blue-800">{capitalizedAuthor}</p>
           </div>
-          <div className="flex bg-white rounded-3xl p-5 items-center hover:bg-gray-200"> {content}</div>
+          <div className="flex bg-white rounded-3xl p-5 items-center hover:bg-gray-200"> {content}
+          
+          </div>
         </div>
     );
   }

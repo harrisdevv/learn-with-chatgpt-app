@@ -25,17 +25,17 @@ export default function App() {
   );
 }
 
-
 const MainApp: React.FC = () => {
-  const [messages, setMessages] = useState<{ role: string; content: string }[]>([
-    { role: 'system', content: 'You are a helpful assistant.' },
-  ]);
+  const [messages, setMessages] = useState<{ role: string; content: string}[]>(
+    [{ role: 'system', content: 'You are a helpful assistant.' }],
+  );
   const [inputValue, setInputValue] = useState('');
   const [dropdownItems, setDropdownItems] = useState<string[]>([]);
   const messagesRef = useRef<HTMLDivElement>(null);
   const map = {
-    summarytext: "summary the book ??? with 3 sentences",
-    summarybook: "convert the book ??? to actionable habits, actions to do everyday",
+    summarytext: 'summary the book ??? with 3 sentences',
+    summarybook:
+      'convert the book ??? to actionable habits, actions to do everyday',
   };
 
   useEffect(() => {
@@ -51,19 +51,7 @@ const MainApp: React.FC = () => {
     setMessages((prevMessages) => [...prevMessages, userMessage]);
 
     try {
-      const response = await axios.post(
-        'https://api.openai.com/v1/chat/completions',
-        {
-          model: 'gpt-3.5-turbo',
-          messages: [...messages, userMessage],
-        },
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer sk-proj-WrqzDkIfjFH6OraMRCb3T3BlbkFJXnYAoLW31WpE2YwocGTz`,
-          },
-        }
-      );
+      const response = await callOpenAIAPI(messages, userMessage);
       const data = response.data.choices[0].message.content
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
@@ -71,7 +59,7 @@ const MainApp: React.FC = () => {
         .replace(/\n/g, '<br>');
       setMessages((prevMessages) => [
         ...prevMessages,
-        { role: 'assistant', content: data },
+        { role: 'assistant', content: data},
       ]);
     } catch (error) {
       console.error('Error:', error);
@@ -84,9 +72,7 @@ const MainApp: React.FC = () => {
     const text = inputValue;
     if (text.startsWith('/') && text.length > 1) {
       const prefix = text.slice(1);
-      const items = Object.keys(map).filter((key) =>
-        key.startsWith(prefix)
-      );
+      const items = Object.keys(map).filter((key) => key.startsWith(prefix));
       setDropdownItems(items);
     } else {
       setDropdownItems([]);
@@ -95,31 +81,45 @@ const MainApp: React.FC = () => {
 
   return (
     <div style={{ padding: '10px', backgroundColor: '#e4e4e4' }}>
-      <h3 style={{
-        background: 'linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)',
-        WebkitBackgroundClip: 'text',
-        WebkitTextFillColor: 'transparent',
-      }}>ChatGPT Desktop App</h3>
-      <div id="messages" ref={messagesRef} style={{
-        height: 'calc(100vh - 125px)',
-        overflowY: 'scroll',
-        padding: '0.5rem',
-        backgroundColor: '#fcf2f2',
-        animation: 'fadeIn 1s',
-      }} className=" text-black">
-        {/* {messages.map((message, index) => (
-          <p key={index} className="text-black">{message.role === 'user' ? `You: ${message.content}` : `ChatGPT: ${message.content}`}</p>
-        ))} */}
+      <h3
+        style={{
+          background:
+            'linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+        }}
+      >
+        ChatGPT Desktop App
+      </h3>
+      <div
+        id="messages"
+        ref={messagesRef}
+        style={{
+          height: 'calc(100vh - 125px)',
+          overflowY: 'scroll',
+          padding: '0.5rem',
+          backgroundColor: '#fcf2f2',
+          animation: 'fadeIn 1s',
+        }}
+        className=" text-black"
+      >
         {messages.map((message, index) => (
-          <Message index={index} author={message.role} content={message.content} />
+          <Message
+            index={index}
+            author={message.role}
+            content={message.content}
+          />
         ))}
       </div>
-      <div id="input-container" style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        width: '100%',
-      }}>
+      <div
+        id="input-container"
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          width: '100%',
+        }}
+      >
         <input
           type="text"
           id="input"
@@ -132,29 +132,48 @@ const MainApp: React.FC = () => {
             }
           }}
           onInput={completeMessage}
-          className="rounded focus:ring-2 focus:ring-blue-600"
-          style={{ width: '100%', maxWidth: '100%', padding: '0.5rem', fontSize: '1rem', marginRight: '10px', border: '1px solid #ccc' }}
+          className="rounded focus:ring-2 focus:ring-blue-600 static"
+          style={{
+            width: '100%',
+            maxWidth: '100%',
+            padding: '0.5rem',
+            fontSize: '1rem',
+            marginRight: '10px',
+            border: '1px solid #ccc',
+          }}
         />
         {dropdownItems.length > 0 && (
-          <div id="dropdown" style={{
-            position: 'absolute',
-            left: '0',
-            top: '0',
-            zIndex: 1,
-          }}>
+          <div
+            id="dropdown"
+            style={{
+              zIndex: 1,
+            }}
+            className="absolute bottom-20 left-10 flex flex-col bg-slate-100 rounded-xl border border-2"
+          >
             {dropdownItems.map((item, index) => (
-              <div key={index} onClick={() => {
-                const jumpIndex = map[item as keyof typeof map].indexOf('???');
-                setInputValue(map[item as keyof typeof map].replace('???', ''));
-                if (jumpIndex !== -1) {
-                  setTimeout(() => {
-                    const inputElement = document.getElementById('input') as HTMLInputElement;
-                    inputElement.setSelectionRange(jumpIndex, jumpIndex);
-                    inputElement.focus();
-                  }, 0);
-                }
-                setDropdownItems([]);
-              }}>{item}</div>
+              <button
+                key={index}
+                className="border-1 border-black hover:bg-slate-200 p-2 rounded-md"
+                onClick={() => {
+                  const jumpIndex =
+                    map[item as keyof typeof map].indexOf('???');
+                  setInputValue(
+                    map[item as keyof typeof map].replace('???', ''),
+                  );
+                  if (jumpIndex !== -1) {
+                    setTimeout(() => {
+                      const inputElement = document.getElementById(
+                        'input',
+                      ) as HTMLInputElement;
+                      inputElement.setSelectionRange(jumpIndex, jumpIndex);
+                      inputElement.focus();
+                    }, 0);
+                  }
+                  setDropdownItems([]);
+                }}
+              >
+                {item}
+              </button>
             ))}
           </div>
         )}
@@ -175,4 +194,19 @@ const MainApp: React.FC = () => {
     </div>
   );
 };
+async function callOpenAIAPI(messages: { role: string; content: string; }[], userMessage: { role: string; content: string; }) {
+  return await axios.post(
+    'https://api.openai.com/v1/chat/completions',
+    {
+      model: 'gpt-3.5-turbo',
+      messages: [...messages, userMessage],
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer sk-proj-WrqzDkIfjFH6OraMRCb3T3BlbkFJXnYAoLW31WpE2YwocGTz`,
+      },
+    }
+  );
+}
 

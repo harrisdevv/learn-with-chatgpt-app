@@ -1,14 +1,13 @@
 # Electron React App with Tailwind CSS and TypeScript
-
-This project is an Electron application built using React and TypeScript, styled with Tailwind CSS. It also integrates with the OpenAI API for AI functionalities.
-
 ![Application UI](./assets/app_ui.png)
 
+Welcome to the ChatGPT Learning Assistant project! This project is a tool designed to help you learn faster and more effectively by leveraging the powerful capabilities of ChatGPT. Whether you're studying for exams, exploring new topics, or just satisfying your curiosity, this tool can assist you by providing instant answers, explanations, and insights.
 ## Table of Contents
 
 - [Electron React App with Tailwind CSS and TypeScript](#electron-react-app-with-tailwind-css-and-typescript)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
+  - [How It Works](#how-it-works)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
 
@@ -20,6 +19,14 @@ This project is an Electron application built using React and TypeScript, styled
 - **Tailwind CSS** for utility-first CSS styling.
 - Integration with **OpenAI API** for AI functionalities.
 
+## How It Works
+
+1. **Ask Questions:** Simply type your questions into the input box and hit 'Send'.
+2. **Receive Answers:** ChatGPT processes your query and provides detailed, accurate responses.
+3. **Summarize Information:** Use built-in commands to get summaries of books, articles, or any lengthy content.
+4. **Actionable Habits:** Convert complex information into daily habits and actionable steps.
+
+
 ## Prerequisites
 
 - Node.js (v14 or later)
@@ -28,8 +35,15 @@ This project is an Electron application built using React and TypeScript, styled
 ## Installation
 
 1. Clone the repository:
-
-   ```sh
-   git clone https://github.com/yourusername/electron-react-app.git
-   cd electron-react-app
-
+```sh
+git clone https://github.com/yourusername/electron-react-app.git
+cd electron-react-app
+```
+2. Install dependencies:
+```sh
+npm install
+```
+3. Start the application:
+```sh
+npm start
+```
