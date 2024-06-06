@@ -5,7 +5,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 import '../styles/output.css'; // Ensure Tailwind CSS is correctly configured
-import Message from './message';
+import Message from './Message';
 import speechToText from './OpenAI';
 import {OpenAPIKey} from './Key';
 
@@ -31,7 +31,7 @@ export default function App() {
 
 const MainApp: React.FC = () => {
   const [messages, setMessages] = useState<{ role: string; content: string, tag:Array<string>}[]>(
-    [{ role: 'system', content: 'You are a helpful assistant. You turn any information to a fun story to help me learn better and more efficiently and lots of fun.' , tag:[]}],
+    [{ role: 'system', content: 'You are a helpful assistant. You turn any information to a fun story to help me learn better and more efficiently and lots of fun. You highlight the important keyword of your answer.' , tag:[]}],
   );
   const [inputValue, setInputValue] = useState('');
   const [dropdownItems, setDropdownItems] = useState<string[]>([]);
@@ -50,6 +50,7 @@ const MainApp: React.FC = () => {
   }, [messages]);
 
   const sendMessage = async () => {
+    setInputValue('');
     if (inputValue.trim() === '') return;
 
     const userMessage = { role: 'user', content: inputValue, tag:[]};
@@ -58,17 +59,9 @@ const MainApp: React.FC = () => {
     try {
       const response = await callOpenAIAPI(messages, userMessage);
       const data = response.data.choices[0].message.content
-        // .replace(/&/g, '&amp;')
-        // .replace(/</g, '&lt;')
-        // .replace(/>/g, '&gt;')
-        // .replace(/(\n){2,}/g, (match: string, p1: string) => `<br>`.repeat(match.length / 2));
       const questionAboutTag = `Extract important keywords from this text '${data}'. Return one line string with format "keyword1,keyword2,keyword3,etc"`;
       const responseTag = await callOpenAIAPI(messages, {role: 'user', content: questionAboutTag});
       var dataTag = responseTag.data.choices[0].message.content
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/\n/g, '<br>').replace("\"","");
       if (dataTag.startsWith('"')) {
         dataTag = dataTag.slice(1);
       }
@@ -84,7 +77,6 @@ const MainApp: React.FC = () => {
       console.error('Error:', error);
     }
 
-    setInputValue('');
   };
 
   const completeMessage = () => {

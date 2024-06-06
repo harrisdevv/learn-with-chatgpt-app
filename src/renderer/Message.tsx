@@ -46,7 +46,7 @@ class Message extends React.PureComponent<MessageProps> {
           <MarkdownRenderer markdown={content} />
           {tag.length > 0 && (
             <div className="tag">
-              <span className="text-xs">Tag: </span>
+              <span className="text-xs">Keyword: </span>
               {tag.map((tagName, index) => (
                 <button key={index} className="text-xs text-blue-800 italic hover:underline" onClick={() => this.appendTag(tagName)}>
                   {tagName},&nbsp;
