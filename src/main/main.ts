@@ -14,6 +14,10 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+import * as dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();
 
 class AppUpdater {
   constructor() {

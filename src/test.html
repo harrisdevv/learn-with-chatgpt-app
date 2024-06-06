@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Markdown-it Example</title>
+</head>
+<body>
+  <textarea id="markdown-input" rows="10" cols="50">
+# Markdown-it in the Browser
+
+Type some *Markdown* here!
+  </textarea>
+  <button id="convert-button">Convert to HTML</button>
+  <div id="html-output"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+  <script>
+    document.getElementById('convert-button').addEventListener('click', () => {
+      const md = window.markdownit();
+      const markdownText = document.getElementById('markdown-input').value;
+      const html = md.render(markdownText);
+      document.getElementById('html-output').innerHTML = html;
+    });
+  </script>
+</body>
+</html>

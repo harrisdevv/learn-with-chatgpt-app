@@ -6,6 +6,10 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 import '../styles/output.css'; // Ensure Tailwind CSS is correctly configured
 import Message from './message';
+import speechToText from './OpenAI';
+import {OpenAPIKey} from './Key';
+
+// import MarkdownIt from "markdown-it';
 
 function Hello() {
   return (
@@ -26,16 +30,17 @@ export default function App() {
 }
 
 const MainApp: React.FC = () => {
-  const [messages, setMessages] = useState<{ role: string; content: string}[]>(
-    [{ role: 'system', content: 'You are a helpful assistant.' }],
+  const [messages, setMessages] = useState<{ role: string; content: string, tag:Array<string>}[]>(
+    [{ role: 'system', content: 'You are a helpful assistant. You turn any information to a fun story to help me learn better and more efficiently and lots of fun.' , tag:[]}],
   );
   const [inputValue, setInputValue] = useState('');
   const [dropdownItems, setDropdownItems] = useState<string[]>([]);
   const messagesRef = useRef<HTMLDivElement>(null);
   const map = {
-    summarytext: 'summary the book ??? with 3 sentences',
-    summarybook:
-      'convert the book ??? to actionable habits, actions to do everyday',
+    sumbookwith3sen: 'summarize the book "???" with 3 sentences',
+    sumbooktohabit:
+      'convert the book "???" to actionable habits, actions to do everyday',
+    firstprinciple: 'break down "???" knowledge by first principles method to an semantic tree that help me learn the important first, give me the resource to learn that each important part',
   };
 
   useEffect(() => {
@@ -47,20 +52,34 @@ const MainApp: React.FC = () => {
   const sendMessage = async () => {
     if (inputValue.trim() === '') return;
 
-    const userMessage = { role: 'user', content: inputValue };
+    const userMessage = { role: 'user', content: inputValue, tag:[]};
     setMessages((prevMessages) => [...prevMessages, userMessage]);
 
     try {
       const response = await callOpenAIAPI(messages, userMessage);
       const data = response.data.choices[0].message.content
+        // .replace(/&/g, '&amp;')
+        // .replace(/</g, '&lt;')
+        // .replace(/>/g, '&gt;')
+        // .replace(/(\n){2,}/g, (match: string, p1: string) => `<br>`.repeat(match.length / 2));
+      const questionAboutTag = `Extract important keywords from this text '${data}'. Return one line string with format "keyword1,keyword2,keyword3,etc"`;
+      const responseTag = await callOpenAIAPI(messages, {role: 'user', content: questionAboutTag});
+      var dataTag = responseTag.data.choices[0].message.content
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
-        .replace(/\n/g, '<br>');
+        .replace(/\n/g, '<br>').replace("\"","");
+      if (dataTag.startsWith('"')) {
+        dataTag = dataTag.slice(1);
+      }
+      if (dataTag.endsWith('"')) {
+        dataTag = dataTag.slice(0, -1);
+      }
       setMessages((prevMessages) => [
         ...prevMessages,
-        { role: 'assistant', content: data},
+        { role: 'assistant', content: data, tag: dataTag.split(',').map((tag: string) => tag.trim()) },
       ]);
+      console.log(dataTag.split(","))
     } catch (error) {
       console.error('Error:', error);
     }
@@ -81,7 +100,7 @@ const MainApp: React.FC = () => {
 
   return (
     <div style={{ padding: '10px', backgroundColor: '#e4e4e4' }}>
-      <h3
+      <h3 className="py-1 text-1xl font-bold"
         style={{
           background:
             'linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet)',
@@ -89,13 +108,15 @@ const MainApp: React.FC = () => {
           WebkitTextFillColor: 'transparent',
         }}
       >
-        ChatGPT Desktop App
+        AI Learning Assistant App
       </h3>
+      {/* TODO: But python script is better
+      <button className='px-2 py-1 rounded-lg border-2 border-slate-300 hover:bg-slate-300' onClick={()=> {speechToText("testFile.mp3")}}>📯</button> */}
       <div
         id="messages"
         ref={messagesRef}
         style={{
-          height: 'calc(100vh - 125px)',
+          height: 'calc(100vh - 135px)',
           overflowY: 'scroll',
           padding: '0.5rem',
           backgroundColor: '#fcf2f2',
@@ -108,6 +129,7 @@ const MainApp: React.FC = () => {
             index={index}
             author={message.role}
             content={message.content}
+            tag={message.tag}
           />
         ))}
       </div>
@@ -148,7 +170,7 @@ const MainApp: React.FC = () => {
             style={{
               zIndex: 1,
             }}
-            className="absolute bottom-20 left-10 flex flex-col bg-slate-100 rounded-xl border border-2"
+            className="absolute bottom-20 left-10 flex flex-col bg-slate-100 rounded-xl border-2 border-slate-300"
           >
             {dropdownItems.map((item, index) => (
               <button
@@ -204,7 +226,7 @@ async function callOpenAIAPI(messages: { role: string; content: string; }[], use
     {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer sk-proj-WrqzDkIfjFH6OraMRCb3T3BlbkFJXnYAoLW31WpE2YwocGTz`,
+        Authorization: `Bearer ${OpenAPIKey}`,
       },
     }
   );
