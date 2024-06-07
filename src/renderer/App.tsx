@@ -8,8 +8,34 @@ import '../styles/output.css'; // Ensure Tailwind CSS is correctly configured
 import Message from './Message';
 import speechToText from './OpenAI';
 import {OpenAPIKey} from './Key';
-
+// import path from 'path'
 // import MarkdownIt from "markdown-it';
+
+// TODO: Read config.json about Command Shortcut (Copy from cmd github repo), AI System Context
+// const fetchConfig = async () => {
+//   try {
+//     console.log("fetching config")
+//     // const configFilePath = path.resolve(__dirname, '../../config.json');
+//     console.log("config.json")
+//     const response = await fetch("config.json");
+//     const data = await response.json();
+//     return data;
+//   } catch (error) {
+//     console.error(error);
+//     return null;
+//   }
+// };
+
+// // Store the config in a global variable
+// let globalConfig = null;
+
+// // Fetch the config when the page loads
+// document.addEventListener('DOMContentLoaded', async () => {
+//   globalConfig = await fetchConfig();
+// });
+
+// // Access the global config variable
+// console.log(globalConfig);
 
 function Hello() {
   return (
