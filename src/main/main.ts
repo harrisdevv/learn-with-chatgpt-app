@@ -9,7 +9,7 @@
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, IpcMainEvent } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
@@ -139,3 +139,29 @@ app
     });
   })
   .catch(console.log);
+
+ipcMain.on('create-popup', (event: IpcMainEvent, args: { x: number, y: number, content: string }) => {
+  const { x, y, content } = args;
+  const wordCount = content.split(' ').length;
+  const wpm =120;
+  const displayTime = wordCount*60/wpm * 1000; // 1 second per word
+
+  const popup = new BrowserWindow({
+    width: 300,
+    height: 200,
+    frame: false,
+    alwaysOnTop: true,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false
+    }
+  });
+
+  popup.loadURL(`data:text/html;charset=UTF-8,<div>${content}</div>`);
+
+  popup.setPosition(x + 10, y); // Position the window to the right of the cursor
+
+  setTimeout(() => {
+    popup.close();
+  }, displayTime);
+});

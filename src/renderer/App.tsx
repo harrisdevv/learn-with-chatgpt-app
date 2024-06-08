@@ -1,41 +1,11 @@
-import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import icon from '../../assets/icon.svg';
-import './App.css';
-import React, { useState, useRef, useEffect } from 'react';
-import ReactDOM from 'react-dom';
 import axios from 'axios';
-import '../styles/output.css'; // Ensure Tailwind CSS is correctly configured
+import React, { useEffect, useRef, useState } from 'react';
+import { Route, MemoryRouter as Router, Routes } from 'react-router-dom';
+import '../styles/output.css'; 
+import './App.css';
+import { OpenAPIKey } from './Key';
 import Message from './Message';
-import speechToText from './OpenAI';
-import {OpenAPIKey} from './Key';
-// import path from 'path'
-// import MarkdownIt from "markdown-it';
 
-// TODO: Read config.json about Command Shortcut (Copy from cmd github repo), AI System Context
-// const fetchConfig = async () => {
-//   try {
-//     console.log("fetching config")
-//     // const configFilePath = path.resolve(__dirname, '../../config.json');
-//     console.log("config.json")
-//     const response = await fetch("config.json");
-//     const data = await response.json();
-//     return data;
-//   } catch (error) {
-//     console.error(error);
-//     return null;
-//   }
-// };
-
-// // Store the config in a global variable
-// let globalConfig = null;
-
-// // Fetch the config when the page loads
-// document.addEventListener('DOMContentLoaded', async () => {
-//   globalConfig = await fetchConfig();
-// });
-
-// // Access the global config variable
-// console.log(globalConfig);
 
 function Hello() {
   return (
@@ -115,6 +85,30 @@ const MainApp: React.FC = () => {
       setDropdownItems([]);
     }
   };
+
+  useEffect(() => {
+    const handleKeydown = (event: KeyboardEvent) => {
+      // if (event.altKey && event.key.toLowerCase() === 'g') {
+      //   console.log(event.key)
+      if (event.key === 'g') {
+        console.log("g")
+        const content = 'This is a popup window with some text content';
+
+        window.electron.send('create-popup', {
+          x: window.screenX,
+          y: window.screenY,
+          content: content
+        });
+      }
+    };
+
+    document.addEventListener('keydown', handleKeydown);
+
+    // Clean up the event listener on component unmount
+    return () => {
+      document.removeEventListener('keydown', handleKeydown);
+    };
+  }, []);
 
   return (
     <div style={{ padding: '10px', backgroundColor: '#e4e4e4' }}>
@@ -249,4 +243,5 @@ async function callOpenAIAPI(messages: { role: string; content: string; }[], use
     }
   );
 }
+
 
